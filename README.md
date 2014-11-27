@@ -1,0 +1,1 @@
+French description and download (you will need to create an account): http://devbukkit.fr/forum/resources/perworlditems.118/
