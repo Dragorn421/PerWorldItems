@@ -17,24 +17,27 @@ public class TravelAction
 
 	final private Type type;
 	final private int priority;
-	final private Collection<ItemType> disallowedTypes;
-	final private Collection<ItemType> disallowedTypesView;
-	final private String disallowedTypesString;
+	final private Collection<ItemType> itemTypes;
+	final private boolean whitelist;
 
-	public TravelAction(final Type type, final int priority, final Collection<ItemType> disallowedTypes)
+	final private Collection<ItemType> itemTypesView;
+	final private String itemTypesString;
+
+	public TravelAction(final Type type, final int priority, final Collection<ItemType> disallowedTypes, final boolean whitelist)
 	{
 		this.type = type;
 		this.priority = priority;
-		this.disallowedTypes = new HashSet<>(disallowedTypes);
-		this.disallowedTypesView = Collections.unmodifiableCollection(this.disallowedTypes);
+		this.itemTypes = new HashSet<>(disallowedTypes);
+		this.whitelist = whitelist;
+		this.itemTypesView = Collections.unmodifiableCollection(this.itemTypes);
 		final StringBuilder sb = new StringBuilder();
-		for(final ItemType it : this.disallowedTypes)
+		for(final ItemType it : this.itemTypes)
 		{
 			if(sb.length() != 0)
 				sb.append(", ");
 			sb.append(it.toString());
 		}
-		this.disallowedTypesString = sb.toString();
+		this.itemTypesString = sb.toString();
 	}
 
 	public Type getType()
@@ -47,14 +50,19 @@ public class TravelAction
 		return travelAction==null?this:(travelAction.priority>this.priority?travelAction:this);
 	}
 
-	public Collection<ItemType> getDisallowedTypesView()
+	public boolean isWhitelist()
 	{
-		return this.disallowedTypesView;
+		return this.whitelist;
 	}
 
-	public String getDisallowedTypesAsString()
+	public Collection<ItemType> getItemTypesView()
 	{
-		return this.disallowedTypesString;
+		return this.itemTypesView;
+	}
+
+	public String getItemTypesAsString()
+	{
+		return this.itemTypesString;
 	}
 
 }

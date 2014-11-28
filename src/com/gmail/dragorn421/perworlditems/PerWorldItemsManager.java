@@ -46,9 +46,12 @@ public class PerWorldItemsManager
 		switch(ta.getType())
 		{
 		case DISALLOW:
-			if(this.hasDisallowedItems(e.getPlayer(), ta))
+			if(this.matchesItems(e.getPlayer(), ta))
 			{
-				e.getPlayer().sendMessage(Messages.ITEMS_DISALLOWED.replace("{ITEMS}", ta.getDisallowedTypesAsString()));
+				if(ta.isWhitelist())
+					e.getPlayer().sendMessage(Messages.ITEMS_ALLOWED.replace("{ITEMS}", ta.getItemTypesAsString()));
+				else
+					e.getPlayer().sendMessage(Messages.ITEMS_DISALLOWED.replace("{ITEMS}", ta.getItemTypesAsString()));
 				e.setCancelled(true);
 			}
 			break;
@@ -75,11 +78,13 @@ public class PerWorldItemsManager
 		}
 	}
 
-	private boolean hasDisallowedItems(final Player p, final TravelAction travelAction)
+	private boolean matchesItems(final Player p, final TravelAction travelAction)
 	{
 		for(final ItemStack item : p.getInventory().getContents())
 		{
-			if(item != null && travelAction.getDisallowedTypesView().contains(new ItemType(item)))
+			// if whitelist (true) and if item is in list (true), dont return true
+			// if blacklist (false) and if item is in list (true), return true
+			if(item != null && (travelAction.isWhitelist() != travelAction.getItemTypesView().contains(new ItemType(item))))
 				return true;
 		}
 		return false;
@@ -91,7 +96,8 @@ public class PerWorldItemsManager
 		boolean modified = false;
 		for(int i=0;i<contents.length;i++)
 		{
-			if(contents[i] != null && travelAction.getDisallowedTypesView().contains(new ItemType(contents[i])))
+			// same "if" statement as above
+			if(contents[i] != null && (travelAction.isWhitelist() != travelAction.getItemTypesView().contains(new ItemType(contents[i]))))
 			{
 				contents[i] = null;
 				modified = true;
@@ -190,7 +196,7 @@ public class PerWorldItemsManager
 			PerWorldItemsPlugin.get().getLogger().warning("World \"" + cs.getName() + "\" in \"" + cs.getParent().getName() + "\" has no items defined");
 			return null;
 		}
-		return new TravelAction(type, cs.getInt("priority", 0), ItemType.getTypes(items));
+		return new TravelAction(type, cs.getInt("priority", 0), ItemType.getTypes(items), cs.getBoolean("whitelist", false));
 	}
 
 }
