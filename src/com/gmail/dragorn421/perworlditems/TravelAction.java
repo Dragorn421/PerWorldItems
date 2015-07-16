@@ -19,16 +19,18 @@ public class TravelAction
 	final private int priority;
 	final private Collection<ItemType> itemTypes;
 	final private boolean whitelist;
+	final private boolean ignoreSameWorld;
 
 	final private Collection<ItemType> itemTypesView;
 	final private String itemTypesString;
 
-	public TravelAction(final Type type, final int priority, final Collection<ItemType> disallowedTypes, final boolean whitelist)
+	public TravelAction(final Type type, final int priority, final Collection<ItemType> disallowedTypes, final boolean whitelist, final boolean ignoreSameWorld)
 	{
 		this.type = type;
 		this.priority = priority;
 		this.itemTypes = new HashSet<>(disallowedTypes);
 		this.whitelist = whitelist;
+		this.ignoreSameWorld = ignoreSameWorld;
 		this.itemTypesView = Collections.unmodifiableCollection(this.itemTypes);
 		final StringBuilder sb = new StringBuilder();
 		for(final ItemType it : this.itemTypes)
@@ -53,6 +55,11 @@ public class TravelAction
 	public boolean isWhitelist()
 	{
 		return this.whitelist;
+	}
+
+	public boolean ignoreSameWorld()
+	{
+		return this.ignoreSameWorld;
 	}
 
 	public Collection<ItemType> getItemTypesView()

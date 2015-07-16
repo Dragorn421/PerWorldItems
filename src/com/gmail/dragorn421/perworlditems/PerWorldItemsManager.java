@@ -41,7 +41,7 @@ public class PerWorldItemsManager
 		final World from = e.getFrom().getWorld();
 		final World to = e.getTo().getWorld();
 		final TravelAction ta = this.getTravelAction(from, to);
-		if(ta == null)
+		if(ta == null || (ta.ignoreSameWorld() && (from == to)))
 			return;
 		switch(ta.getType())
 		{
@@ -196,7 +196,7 @@ public class PerWorldItemsManager
 			PerWorldItemsPlugin.get().getLogger().warning("World \"" + cs.getName() + "\" in \"" + cs.getParent().getName() + "\" has no items defined");
 			return null;
 		}
-		return new TravelAction(type, cs.getInt("priority", 0), ItemType.getTypes(items), cs.getBoolean("whitelist", false));
+		return new TravelAction(type, cs.getInt("priority", 0), ItemType.getTypes(items), cs.getBoolean("whitelist", false), cs.getBoolean("ignoreSameWorld", false));
 	}
 
 }
